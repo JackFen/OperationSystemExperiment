@@ -1,0 +1,9 @@
+# ninja log v5
+1	183	7149784040522248	CMakeFiles/deviceManage.dir/main.cpp.obj	1ce8085af4f89115
+185	391	7149784042533709	deviceManage.exe	1c375042835fad
+3	133	7149784285388933	CMakeFiles/deviceManage.dir/main.cpp.obj	1ce8085af4f89115
+133	318	7149784287194834	deviceManage.exe	1c375042835fad
+3	128	7149789661694121	CMakeFiles/deviceManage.dir/main.cpp.obj	1ce8085af4f89115
+128	279	7149789663138464	deviceManage.exe	1c375042835fad
+3	125	7149792030481424	CMakeFiles/deviceManage.dir/main.cpp.obj	1ce8085af4f89115
+126	278	7149792031966196	deviceManage.exe	1c375042835fad

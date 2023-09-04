@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/Dev_Bank.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Dev_Bank.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/DeviceManage.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/DeviceManage.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/FileManage.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/FileManage.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Mem_FIFO.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Mem_FIFO.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Mem_LRU.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Mem_LRU.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/MemoryManage.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/MemoryManage.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_FCFS.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_FCFS.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_PC.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_PC.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_Priority.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_Priority.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_ROUND.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/Proc_ROUND.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/ProcessManage.cpp" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/ProcessMange.h" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/main.cpp" charset="GBK" />
+  </component>
+</project>

@@ -1,0 +1,12 @@
+# ninja log v5
+0	142	7149807511026281	CMakeFiles/fileManage.dir/main.cpp.obj	1bd777b33f402b1f
+3	136	7149808174382456	CMakeFiles/fileManage.dir/main.cpp.obj	1bd777b33f402b1f
+136	296	7149808175950230	fileManage.exe	d89749ec7ab3155a
+4	143	7149808321190739	CMakeFiles/fileManage.dir/main.cpp.obj	1bd777b33f402b1f
+144	314	7149808322859330	fileManage.exe	d89749ec7ab3155a
+4	520	7150572438692834	CMakeFiles/fileManage.dir/main.cpp.obj	1bd777b33f402b1f
+521	821	7150572441671944	fileManage.exe	d89749ec7ab3155a
+3	126	7150575974314481	CMakeFiles/fileManage.dir/main.cpp.obj	1bd777b33f402b1f
+126	276	7150575975772270	fileManage.exe	d89749ec7ab3155a
+3	145	7150595677942197	CMakeFiles/fileManage.dir/main.cpp.obj	1bd777b33f402b1f
+146	295	7150595679509519	fileManage.exe	d89749ec7ab3155a

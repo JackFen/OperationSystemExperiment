@@ -1,0 +1,3 @@
+D:/CodeStorage/CLion_repository/operationSystemExperiment/deviceManage/cmake-build-debug/CMakeFiles/deviceManage.dir
+D:/CodeStorage/CLion_repository/operationSystemExperiment/deviceManage/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/CodeStorage/CLion_repository/operationSystemExperiment/deviceManage/cmake-build-debug/CMakeFiles/rebuild_cache.dir

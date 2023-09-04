@@ -1,0 +1,223 @@
+#include<iostream>
+#include<set>
+#include <windows.h>
+
+using namespace std;
+int cputime = 0; //cpu占用时间片数
+typedef struct pcb {
+    int NAME; //进程标识符
+    int PRIO = 50; //进程优先数
+    int ROUND = 2; //进程每次轮转的时间片数(设为常数 2)
+    int CPUTIME; //进程累计占用 CPU 的时间片数
+    int NEEDTIME; //进程到完成还需要的时间片数
+    char STATE; //进程状态
+    int time; //周转时间
+    double weightTime; //带权周转时间
+    struct pcb *NEXT; //链指针
+} PCB, *RunPoint, *WaitList, *FinishList;
+
+//========通用函数============
+
+// 创建新进程，并将其插入到就绪队列
+void NewPCB(PCB *&TAIL, int name, int needtime) {
+    PCB *temp = new PCB;
+    temp->NAME = name;
+    temp->PRIO = 50 - needtime;
+    temp->CPUTIME = 0;
+    temp->NEEDTIME = needtime;
+    temp->STATE = 'W';
+    temp->NEXT = nullptr;
+//    cout<<"flag"<<endl;
+
+    TAIL->NEXT = temp;
+    TAIL = temp;
+}
+
+// 调度就绪队列的第一个进程投入运行
+void FIRSTIN(WaitList &waitList, PCB *&READY, PCB *&TAIL, RunPoint &RUN) {
+    WaitList temp = waitList;
+    RUN = temp->NEXT;
+    temp->NEXT = temp->NEXT->NEXT;
+    RUN->NEXT = nullptr;
+    RUN->STATE = 'R';
+    //当等待队列为空时，将头指针和尾指针都指向头结点
+    if (waitList->NEXT == nullptr) {
+        READY = waitList;
+        TAIL = waitList;
+    } else {
+        READY = temp->NEXT;
+    }
+//    cout << "FIRSTIN" << endl;
+}
+
+// 显示每执行一次后所有进程的状态及有关信息。
+void PRINT(WaitList waitList, FinishList finishList, RunPoint RUN) {
+    cout << "\n=================运行状态=================================" << endl;
+    cout << "\n当前执行进程\n" << endl;
+    if (RUN == nullptr) {
+        cout << "无" << endl;
+    } else {
+        cout << "name\t cputime\t needtime\t priority\t state" << endl;
+        cout << RUN->NAME << "\t\t\t" << RUN->CPUTIME << "\t\t\t" << RUN->NEEDTIME << "\t\t\t" << RUN->PRIO << "\t\t\t"
+             << RUN->STATE << endl;
+    }
+    cout << "\n就绪队列\n" << endl;
+    if (waitList->NEXT == nullptr) {
+        cout << "无" << endl;
+    } else {
+        cout << "name\t cputime\t needtime\t priority\t state" << endl;
+        PCB *temp = waitList->NEXT;
+        while (temp != nullptr) {
+            cout << temp->NAME << "\t\t\t" << temp->CPUTIME << "\t\t\t" << temp->NEEDTIME << "\t\t\t" << temp->PRIO
+                 << "\t\t\t" << temp->STATE << endl;
+            temp = temp->NEXT;
+        }
+    }
+    cout << "\n完成队列\n" << endl;
+    if (finishList->NEXT == nullptr) {
+        cout << "无" << endl;
+    } else {
+        cout << "name\t cputime\t needtime\t priority\t state" << endl;
+        PCB *temp = finishList->NEXT;
+        while (temp != nullptr) {
+            cout << temp->NAME << "\t\t\t" << temp->CPUTIME << "\t\t\t" << temp->NEEDTIME << "\t\t\t" << temp->PRIO
+                 << "\t\t\t" << temp->STATE << endl;
+            temp = temp->NEXT;
+        }
+    }
+    cout << endl;
+}
+
+//输出平均周转时间和平均带权周转时间
+void printTime(FinishList finishList) {
+    cout << endl;
+    PCB *temp = finishList->NEXT;
+    int sum = 0;
+    double weightSum = 0;
+    int count = 0;
+    while (temp != nullptr) {
+        sum += temp->time;
+        weightSum += temp->weightTime;
+        count++;
+        temp = temp->NEXT;
+    }
+    cout << "平均周转时间：" << (double) sum / count << " 平均带权周转时间：" << weightSum / count << endl;
+}
+
+//=======轮转调度函数=========
+//在轮转法中，将执行了一个时间片单位（为 2），但尚未完成的进程的 PCB，插到就绪队列的队尾
+void INSERT2(WaitList &waitList, RunPoint &RUN, PCB *&READY, PCB *&TAIL) {
+    RUN->STATE = 'W';
+    TAIL->NEXT = RUN;
+    TAIL = TAIL->NEXT;
+    RUN = nullptr;
+    if (READY == waitList) {
+        //再向队列中插入值后，队列不为空，此时将头指针指向第一个进程
+        READY = waitList->NEXT;
+    }
+//    cout << "INSERT2" << endl;
+}
+
+//CPU开始运行进程——轮转调度
+void RUNPCBBYROUND(WaitList &waitList, RunPoint &RUN, PCB *&READY, PCB *&TAIL, PCB *&FINISH) {
+    cputime += 1;
+    if (RUN->NEEDTIME - 2 < 0) {
+        RUN->CPUTIME += RUN->NEEDTIME;
+        RUN->NEEDTIME = 0;
+    } else {
+        RUN->NEEDTIME -= 2;
+        RUN->CPUTIME += 2;
+        cputime += 1;
+    }
+    if (RUN->NEEDTIME == 0) {
+        RUN->STATE = 'F';
+        RUN->time = cputime;
+        RUN->weightTime = (double) cputime / RUN->CPUTIME;
+        FINISH->NEXT = RUN;
+        FINISH = FINISH->NEXT;
+        RUN = nullptr;
+
+    } else {
+        INSERT2(waitList, RUN, READY, TAIL);
+    }
+}
+
+// 按时间片轮转法调度进程
+void ROUNDSCH(WaitList &waitList, FinishList &finishList, PCB *&READY, PCB *&TAIL, PCB *&FINISH, RunPoint &RUN) {
+    while (true) {
+        //若就绪队列无进程且当前无正在运行的进程，则表示所有程序执行完毕
+        if (READY == waitList && RUN == nullptr) {
+            PRINT(waitList, finishList, RUN);
+            cout << "所有程序已全部执行完";
+            printTime(finishList);
+            break;
+        } else {
+            //将就绪队列的第一个进程调入到CPU中
+            FIRSTIN(waitList, READY, TAIL, RUN);
+            //输出当前各个队列状态
+            PRINT(waitList, finishList, RUN);
+            //CPU开始运行第一个进程
+            RUNPCBBYROUND(waitList, RUN, READY, TAIL, FINISH);
+            //延迟0.5秒
+            Sleep(500);
+        }
+//    cout << "ROUNDSCH" << endl;
+    }
+}
+
+// 初始化程序
+void InitProgram(WaitList &waitList, FinishList &finishList, PCB *&READY, PCB *&TAIL, PCB *&FINISH) {
+    waitList = new PCB;
+    waitList->NEXT = nullptr;
+    READY = waitList;
+    TAIL = waitList;
+
+    finishList = new PCB;
+    finishList->NEXT = nullptr;
+    FINISH = finishList;
+}
+
+//封装轮转调度算法
+void ROUNDSCHAll() {
+    //定义用于检查是否有重复输入的集合
+    set<int> names;
+    //定义当前运行进程指针、就绪队列和完成队列等
+    RunPoint RUN = nullptr;
+    WaitList waitList;
+    FinishList finishList;
+    PCB *READY;
+    PCB *TAIL;
+    PCB *FINISH;
+    //初识化就绪队列、完成队列、就绪队列头指针与尾指针以及完成队列的尾指针
+    InitProgram(waitList, finishList, READY, TAIL, FINISH);
+    //    定义PCB信息
+    int name, needtime;
+    //   在使用优先级调度算法时，用户输入PCB信息
+    cout << "当前为轮转调度算法" << endl;
+    cout << "请输入PCB信息，输入0 0结束" << endl;
+    cout << "格式如下\n进程名(数字) 执行所需时间" << endl;
+    while (true) {
+        cin >> name >> needtime;
+        if (name == 0) {
+            cout << "结束输入" << endl;
+            break;
+        } else {
+            int L1 = names.size();
+            names.insert(name);
+            if (names.size() != L1) {
+                NewPCB(TAIL, name, needtime);
+                cout << "添加完成,请继续输入" << endl;
+            } else {
+                cout << "重复输入了进程标识符:" << name << endl;
+            }
+        }
+    }
+    // 将队首指针从头结点移向首元结点
+    READY = waitList->NEXT;
+    //开始执行优先数调度算法
+    ROUNDSCH(waitList, finishList, READY, TAIL, FINISH, RUN);
+}
+
+int main() {
+    ROUNDSCHAll();
+}
